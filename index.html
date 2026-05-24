@@ -6,1752 +6,721 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
-      --bg: #020617;
-      --bg-alt: #020617;
-      --card: rgba(15,23,42,0.98);
-      --border: rgba(31,41,55,0.95);
-      --accent: #4f46e5;
-      --accent-soft: rgba(79,70,229,0.15);
-      --text: #f9fafb;
-      --text-soft: #9ca3af;
+      --bg-color: #0f172a;
+      --bg-color-light: #f9fafb;
+      --text-color: #e5e7eb;
+      --text-color-dark: #111827;
+      --accent-color: #6366f1;
+      --user-msg-bg: #1e293b;
+      --ai-msg-bg: #020617;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    [data-theme="light"] {
+      --bg-color: var(--bg-color-light);
+      --text-color: var(--text-color-dark);
+      --user-msg-bg: #e5e7eb;
+      --ai-msg-bg: #d1d5db;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
-      color: var(--text);
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      color: var(--text-color);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-    }
-    .app {
-      max-width: 1200px;
-      margin: 0 auto;
+      justify-content: center;
       padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.8);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      height: 100vh;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
     }
-    header {
+
+    [data-theme="light"] .app {
+      background: #ffffff;
+      border-color: #e5e7eb;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    }
+
+    .app-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .logo {
+
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .logo-icon {
+
+    .brand-logo {
       width: 32px;
       height: 32px;
       border-radius: 12px;
-      background: conic-gradient(from 180deg, #4f46e5, #22c55e, #ec4899, #f97316, #4f46e5);
+      background: conic-gradient(from 180deg, #6366f1, #22c55e, #ec4899, #6366f1);
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
       font-weight: 700;
       font-size: 18px;
     }
-    .logo-text { display: flex; flex-direction: column; }
-    .logo-text span:first-child { font-weight: 600; letter-spacing: 0.03em; }
-    .logo-text span:last-child { font-size: 12px; color: var(--text-soft); }
-    .header-right { display: flex; align-items: center; gap: 8px; }
-    .pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.9);
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-size: 16px;
+    }
+
+    .brand-subtitle {
       font-size: 11px;
-      color: var(--text-soft);
-      display: inline-flex;
+      opacity: 0.7;
+    }
+
+    .header-actions {
+      display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
-    .pill-dot {
-      width: 6px;
-      height: 6px;
+
+    button,
+    select {
       border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 8px rgba(34,197,94,0.7);
-    }
-    .btn {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.95);
-      color: var(--text);
-      padding: 6px 12px;
-      font-size: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.7);
+      color: var(--text-color);
+      padding: 6px 10px;
+      font-size: 11px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      transition: all 0.15s ease;
     }
-    .btn:hover {
-      background: rgba(31,41,55,0.98);
-      border-color: #4b5563;
+
+    [data-theme="light"] button,
+    [data-theme="light"] select {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+      color: #111827;
+    }
+
+    button:hover,
+    select:hover {
+      border-color: var(--accent-color);
       transform: translateY(-1px);
     }
-    .btn-primary {
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      border-color: transparent;
-      color: #fff;
-      box-shadow: 0 10px 25px rgba(79,70,229,0.35);
+
+    .toggle {
+      padding: 6px 10px;
     }
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #4338ca, #4f46e5);
+
+    .stats {
+      font-size: 11px;
+      opacity: 0.8;
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
-    .btn-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
+
+    .stats span {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 0;
-      font-size: 16px;
-    }
-    main {
-      display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
-      gap: 12px;
-      flex: 1;
-      min-height: 0;
-    }
-    @media (max-width: 900px) {
-      main { grid-template-columns: minmax(0, 1fr); }
-    }
-    .card {
-      background: radial-gradient(circle at top left, rgba(79,70,229,0.08), transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(16,185,129,0.08), transparent 55%),
-                  var(--card);
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-    }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--text-soft);
-    }
-    .card-sub { font-size: 11px; color: var(--text-soft); }
-    .chat-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 6px 2px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: #4b5563 transparent;
-    }
-    .chat-msg {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-    .chat-msg.user .bubble {
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      align-self: flex-end;
-    }
-    .chat-msg.assistant .bubble {
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(55,65,81,0.9);
-    }
-    .avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at top, #4f46e5, #0f172a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      flex-shrink: 0;
-    }
-    .avatar.user {
-      background: radial-gradient(circle at top, #22c55e, #064e3b);
-    }
-    .bubble {
-      padding: 8px 10px;
-      border-radius: 14px;
-      max-width: 100%;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-    .chat-footer {
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.98);
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
       gap: 4px;
     }
-    .input-row {
+
+    .stats-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .app-body {
       display: flex;
-      align-items: flex-end;
+      flex-direction: row;
+      min-height: 480px;
+      max-height: 70vh;
+    }
+
+    .chat-container {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .sidebar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      gap: 10px;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent);
+    }
+
+    [data-theme="light"] .sidebar {
+      background: #f9fafb;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 90%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.4;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--user-msg-bg);
+    }
+
+    .message.ai {
+      align-self: flex-start;
+      background: var(--ai-msg-bg);
+    }
+
+    .message-meta {
+      font-size: 10px;
+      opacity: 0.6;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .message-actions button {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
+
+    .quick-replies {
+      padding: 8px 14px 0;
+      display: flex;
+      flex-wrap: wrap;
       gap: 6px;
     }
+
+    .quick-replies button {
+      font-size: 11px;
+      padding: 5px 9px;
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    [data-theme="light"] .quick-replies button {
+      background: #e5e7eb;
+    }
+
+    .chat-input {
+      padding: 10px 14px 12px;
+      border-top: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
     textarea {
       flex: 1;
       resize: none;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.98);
-      color: var(--text);
-      font-size: 13px;
-      padding: 6px 8px;
+      min-height: 40px;
       max-height: 120px;
-      min-height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-color);
+      padding: 8px 10px;
+      font-size: 13px;
       outline: none;
-      line-height: 1.4;
     }
-    textarea::placeholder { color: #6b7280; }
-    .input-tools {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--text-soft);
+
+    [data-theme="light"] textarea {
+      background: #f9fafb;
+      border-color: #d1d5db;
+      color: #111827;
     }
-    .style-selector {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.95);
-      cursor: pointer;
-    }
-    .style-dropdown {
-      position: absolute;
-      background: rgba(15,23,42,0.98);
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      padding: 4px;
-      display: none;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 12px;
-      z-index: 20;
-    }
-    .style-option {
-      padding: 4px 6px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .style-option:hover { background: rgba(31,41,55,0.95); }
-    .quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      font-size: 11px;
-    }
-    .quick-actions button {
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.95);
-      color: var(--text-soft);
-      padding: 3px 8px;
-      cursor: pointer;
-      font-size: 11px;
-    }
-    .quick-actions button:hover {
-      background: rgba(31,41,55,0.98);
-      color: var(--text);
-    }
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 8px;
-      font-size: 12px;
-    }
-    .tool {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.96);
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-    }
-    .tool:hover {
-      background: rgba(31,41,55,0.98);
-      border-color: rgba(55,65,81,0.9);
-      transform: translateY(-1px);
-    }
-    .tool-title { font-size: 12px; font-weight: 500; }
-    .tool-desc { font-size: 11px; color: var(--text-soft); }
-    .tool-tag { font-size: 10px; color: #a5b4fc; }
-    .section {
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.96);
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-    }
-    .section h3 {
-      font-size: 12px;
+
+    .send-btn {
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #6366f1, #22c55e);
+      border: none;
+      color: white;
       font-weight: 600;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .field { display: flex; flex-direction: column; gap: 3px; }
-    .field label { font-size: 11px; color: var(--text-soft); }
-    .field input,
-    .field select,
-    .field textarea {
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.98);
-      color: var(--text);
-      font-size: 12px;
-      padding: 5px 7px;
-      outline: none;
-    }
-    .field textarea { min-height: 60px; max-height: 140px; }
-    .field small { font-size: 10px; color: var(--text-soft); }
-    .row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-    .row > * { flex: 1; }
-    .badge {
-      font-size: 10px;
-      padding: 2px 6px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.98);
-      color: var(--text-soft);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.5);
     }
-    .toast {
-      position: fixed;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15,23,42,0.98);
-      border-radius: 999px;
-      border: 1px solid rgba(55,65,81,0.9);
-      padding: 6px 12px;
-      font-size: 12px;
-      color: var(--text);
-      display: none;
-      z-index: 50;
+
+    .send-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
     }
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,0.85);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 40;
-    }
-    .modal {
-      background: rgba(15,23,42,0.98);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      padding: 12px;
-      max-width: 520px;
-      width: 100%;
-      max-height: 80vh;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 12px;
-    }
-    .modal-header {
+
+    .input-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      font-size: 10px;
+      opacity: 0.7;
     }
-    .modal-title { font-size: 13px; font-weight: 600; }
-    .modal-body { display: flex; flex-direction: column; gap: 6px; }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 6px; margin-top: 4px; }
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+
+    .sidebar-section {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      flex-direction: column;
       gap: 6px;
+      font-size: 11px;
     }
-    .image-card {
-      position: relative;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: rgba(15,23,42,0.96);
-      min-height: 100px;
+
+    [data-theme="light"] .sidebar-section {
+      background: #ffffff;
+      border-color: #e5e7eb;
+    }
+
+    .sidebar-section h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+    }
+
+    .theme-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: var(--text-soft);
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
       cursor: pointer;
     }
-    .image-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .image-card button {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      font-size: 10px;
-      padding: 2px 6px;
-    }
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.9);
+
+    .color-dot.blue { background: #6366f1; }
+    .color-dot.green { background: #22c55e; }
+    .color-dot.pink { background: #ec4899; }
+    .color-dot.orange { background: #f97316; }
+
+    .focus-active body,
+    .focus-active .sidebar {
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
     }
-    .lightbox img {
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.6);
+
+    .focus-active .chat-container {
+      flex: 1 1 100%;
+      border-right: none;
     }
-    .audio-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--text-soft);
+
+    .focus-badge {
+      font-size: 10px;
+      opacity: 0.7;
     }
-    .audio-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-      animation: pulse 1s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.4; }
-      100% { transform: scale(1); opacity: 1; }
+
+    @media (max-width: 768px) {
+      .app-body {
+        flex-direction: column;
+      }
+      .chat-container {
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      }
+      .sidebar {
+        flex: none;
+      }
     }
   </style>
 </head>
-<body>
-<div class="app">
-  <header>
-    <div class="logo">
-      <div class="logo-icon">M</div>
-      <div class="logo-text">
-        <span>Zyro AI</span>
-        <span>Il tuo copilota per studiare, creare e capire</span>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="pill">
-        <span class="pill-dot"></span>
-        <span id="statusText">Online · Groq LLaMA 3</span>
-      </div>
-      <button class="btn btn-icon" id="themeBtn">🌓</button>
-      <button class="btn" id="userBtn">👤 <span id="userLabel">Ospite</span></button>
-    </div>
-  </header>
-
-  <main>
-    <!-- CHAT -->
-    <section class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Chat Zyro</div>
-          <div class="card-sub">Parla, scrivi, usa azioni rapide e allega media</div>
+<body data-theme="dark">
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">Z</div>
+        <div class="brand-text">
+          <div class="brand-title">Zyro AI</div>
+          <div class="brand-subtitle">Assistente chiaro, veloce e personalizzabile</div>
         </div>
-        <button class="btn btn-primary" id="newChatBtn">＋ Nuova chat</button>
       </div>
-
-      <div id="chatArea" class="chat-area"></div>
-
-      <div class="chat-footer">
-        <div class="input-row">
-          <button class="btn btn-icon" id="attachBtn" title="Allega">📎</button>
-          <button class="btn btn-icon" id="micBtn" title="Dettatura vocale">🎤</button>
-          <textarea id="chatInput" placeholder="Scrivi un messaggio per Zyro..." oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
-          <button class="btn btn-icon btn-primary" id="sendBtn">➤</button>
+      <div class="header-actions">
+        <button id="focusToggle" class="toggle">
+          🧘 Focus
+        </button>
+        <button id="themeToggle" class="toggle">
+          🌙 / ☀️
+        </button>
+        <div class="stats">
+          <span><span class="stats-dot"></span> Online</span>
+          <span id="statsMessages">0 messaggi</span>
+          <span id="statsSessions">Sessione: …</span>
         </div>
-        
-        <div class="input-tools">
-          <div style="position:relative;">
-            <button class="style-selector" id="styleSelector">
-              <span id="styleEmoji">😊</span>
-              <span id="styleLabel">Normale</span>
-            </button>
-            <div class="style-dropdown" id="styleDropdown">
-              <div class="style-option" data-style="normal"><span>😊</span><span>Normale</span></div>
-              <div class="style-option" data-style="simple"><span>🐣</span><span>Semplice</span></div>
-              <div class="style-option" data-style="detailed"><span>🎓</span><span>Dettagliata</span></div>
-              <div class="style-option" data-style="bullets"><span>📌</span><span>Punti elenco</span></div>
-              <div class="style-option" data-style="short"><span>⚡</span><span>Breve</span></div>
-              <div class="style-option" data-style="expert"><span>🔬</span><span>Esperta</span></div>
-              <div class="style-option" data-style="funny"><span>😂</span><span>Divertente</span></div>
-              <div class="style-option" data-style="socratic"><span>🤔</span><span>Socratica</span></div>
-            </div>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <div class="chat-container">
+        <div class="quick-replies">
+          <button data-quick="Spiegami questo in modo semplice.">Spiegami questo</button>
+          <button data-quick="Riassumi il testo in pochi punti.">Riassumi</button>
+          <button data-quick="Genera un esempio di codice in JavaScript.">Genera codice</button>
+          <button data-quick="Dammi 3 idee creative.">3 idee creative</button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input">
+          <div class="input-row">
+            <textarea id="userInput" placeholder="Scrivi un messaggio per Zyro AI..."></textarea>
+            <button id="sendBtn" class="send-btn">Invia</button>
           </div>
-          <div class="audio-indicator" id="audioIndicator" style="display:none;">
-            <div class="audio-dot"></div><span>Ascolto...</span>
-          </div>
-          <div class="quick-actions">
-            <button data-action="regenerate">Rigenera</button>
-            <button data-action="summarize">Riassumi</button>
-            <button data-action="explain">Spiega meglio</button>
-            <button data-action="example">Dammi un esempio</button>
-            <button data-action="read">Leggi</button>
+          <div class="input-meta">
+            <span>Invia con Invio • Nuova riga con Shift+Invio</span>
+            <span id="focusLabel" class="focus-badge">Modalità Focus: OFF</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- TOOLS -->
-    <section class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Strumenti Zyro</div>
-          <div class="card-sub">Quiz, flashcard, testi, immagini, video, condivisione</div>
-        </div>
-      </div>
-
-      <div class="tools-grid">
-        <div class="tool" onclick="openTool('quiz')">
-          <div class="tool-title">🎯 Genera Quiz</div>
-          <div class="tool-desc">5/10/15 domande a scelta multipla</div>
-          <div class="tool-tag">Studio attivo</div>
-        </div>
-        <div class="tool" onclick="openTool('flashcards')">
-          <div class="tool-title">🃏 Flashcard</div>
-          <div class="tool-desc">Deck, So / Non so</div>
-          <div class="tool-tag">Memorizzazione</div>
-        </div>
-        
-         <!-- 🔊 LEGGI -->
-    <div class="tool" onclick="readMessage()">
-        <div class="tool-title">🔊 Leggi</div>
-        <div class="tool-desc">Zyro legge il messaggio ad alta voce</div>
-        <div class="tool-tag">Accessibilità</div>
-    </div>
-
-    <!-- 🎤 PARLA -->
-    <div class="tool" onclick="toggleVoice()">
-        <div class="tool-title">🎤 Parla</div>
-        <div class="tool-desc">Dettatura vocale per scrivere messaggi</div>
-        <div class="tool-tag">Voce</div>
-    </div>
-        <div class="tool" onclick="openTool('story')">
-          <div class="tool-title">📖 Genera storia</div>
-          <div class="tool-desc">Genere, protagonista, ambientazione</div>
-          <div class="tool-tag">Creatività</div>
-        </div>
-        <div class="tool" onclick="openTool('correct')">
-          <div class="tool-title">✍️ Correggi testo</div>
-          <div class="tool-desc">Errori o stile</div>
-          <div class="tool-tag">Scrittura</div>
-        </div>
-        <div class="tool" onclick="openTool('summary')">
-          <div class="tool-title">📋 Riassumi</div>
-          <div class="tool-desc">Punti chiave o breve</div>
-          <div class="tool-tag">Sintesi</div>
-        </div>
-        <div class="tool" onclick="openTool('translate')">
-          <div class="tool-title">🌍 Traduci</div>
-          <div class="tool-desc">Traduzioni naturali</div>
-          <div class="tool-tag">Lingue</div>
-        </div>
-        <div class="tool" onclick="openTool('explain')">
-          <div class="tool-title">🔍 Spiega meglio</div>
-          <div class="tool-desc">Semplice o avanzato</div>
-          <div class="tool-tag">Comprensione</div>
-        </div>
-        <div class="tool" onclick="openTool('ideas')">
-          <div class="tool-title">💡 Genera idee</div>
-          <div class="tool-desc">Brainstorming guidato</div>
-          <div class="tool-tag">Creatività</div>
-        </div>
-        <div class="tool" onclick="openShare()">
-          <div class="tool-title">🔗 Condividi chat</div>
-          <div class="tool-desc">Copia conversazione</div>
-          <div class="tool-tag">Export</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Allegati & Vision</h3>
-        <div class="row">
-          <button class="btn" onclick="openAttachModal()">📎 Menù allega</button>
-          <span class="badge">Foto, immagini, video, analisi oggetto</span>
-        </div>
-        <small>Carica media, Zyro li interpreta via prompt (testo + base64).</small>
-      </div>
-
-      <div class="section">
-        <h3>Immagini & Video AI</h3>
-        <div class="row">
-          <button class="btn" onclick="openImageModal()">🎨 Immagini AI</button>
-          <button class="btn" onclick="openVideoModal()">🎬 Video AI</button>
-        </div>
-        <small>Zyro genera prompt pronti per servizi di immagini e video AI (nessun link).</small>
-      </div>
-
-      <div class="section">
-        <h3>Utente & Preferenze</h3>
-        <div class="field">
-          <label>Nome utente</label>
-          <input id="userName" placeholder="Come vuoi che Zyro ti chiami?" />
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Lingua interfaccia</label>
-            <select id="langSelect">
-              <option value="it">Italiano</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Lettura vocale risposte</label>
-            <select id="voiceToggle">
-              <option value="off">Disattivata</option>
-              <option value="on">Attivata</option>
-            </select>
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3>Tema</h3>
+          <div class="theme-row">
+            <span>Colore accento:</span>
+            <div class="color-dot blue" data-color="#6366f1"></div>
+            <div class="color-dot green" data-color="#22c55e"></div>
+            <div class="color-dot pink" data-color="#ec4899"></div>
+            <div class="color-dot orange" data-color="#f97316"></div>
           </div>
         </div>
-        <button class="btn" onclick="saveUserPrefs()">💾 Salva preferenze</button>
-      </div>
-    </section>
-  </main>
-</div>
 
-<div class="toast" id="toast"></div>
+        <div class="sidebar-section">
+          <h3>Chat</h3>
+          <button id="clearChat">🧹 Cancella cronologia</button>
+          <button id="exportLast">📤 Condividi ultima risposta</button>
+        </div>
 
-<!-- MODAL ATTACH -->
-<div class="modal-backdrop" id="attachModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">📎 Allegati</div>
-      <button class="btn btn-icon" onclick="closeModal('attachModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="tools-grid">
-        <div class="tool" onclick="startCamera()">
-          <div class="tool-title">📸 Scatta foto</div>
-          <div class="tool-desc">Apri fotocamera e analizza oggetto</div>
+        <div class="sidebar-section">
+          <h3>Statistiche locali</h3>
+          <div id="statsDetails">
+            Messaggi utente: 0<br />
+            Messaggi AI: 0<br />
+            Ultimo utilizzo: —
+          </div>
         </div>
-        <div class="tool" onclick="document.getElementById('imgInput').click()">
-          <div class="tool-title">🖼️ Carica immagine</div>
-          <div class="tool-desc">Identifica oggetto</div>
+
+        <div class="sidebar-section">
+          <h3>Note</h3>
+          <p style="opacity:0.8;">
+            Questa è una versione avanzata di Zyro AI con cronologia locale, tema personalizzabile, voce AI e modalità focus.
+          </p>
         </div>
-        <div class="tool" onclick="document.getElementById('videoInput').click()">
-          <div class="tool-title">🎥 Carica video</div>
-          <div class="tool-desc">Analizza contenuto</div>
-        </div>
-        <div class="tool" onclick="openImageModal()">
-          <div class="tool-title">🎨 Genera immagine AI</div>
-          <div class="tool-desc">Prompt immagini</div>
-        </div>
-        <div class="tool" onclick="openVideoModal()">
-          <div class="tool-title">🎬 Crea video AI</div>
-          <div class="tool-desc">Prompt video</div>
-        </div>
-      </div>
-      <input id="imgInput" type="file" accept="image/*" style="display:none" onchange="handleImageUpload(event)" />
-      <input id="videoInput" type="file" accept="video/*" style="display:none" onchange="handleVideoUpload(event)" />
-      <video id="cameraPreview" autoplay playsinline style="width:100%;border-radius:10px;display:none;margin-top:6px;"></video>
-      <div class="modal-footer">
-        <button class="btn" onclick="stopCamera()">Chiudi fotocamera</button>
-      </div>
+      </aside>
     </div>
   </div>
-</div>
 
-<!-- MODAL IMMAGINI -->
-<div class="modal-backdrop" id="imageModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">🎨 Genera immagine AI</div>
-      <button class="btn btn-icon" onclick="closeModal('imageModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>Descrizione immagine</label>
-        <textarea id="imgPrompt" placeholder="Descrivi l'immagine che vuoi generare..."></textarea>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>Stile</label>
-          <select id="imgStyle">
-            <option value="fotorealistico">Fotorealistico</option>
-            <option value="anime">Anime</option>
-            <option value="digital art">Digital art</option>
-            <option value="pittura a olio">Pittura</option>
-            <option value="cyberpunk">Cyberpunk</option>
-            <option value="3d render">3D render</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Proporzioni</label>
-          <select id="imgRatio">
-            <option value="1:1">Quadrata</option>
-            <option value="16:9">Orizzontale</option>
-            <option value="9:16">Verticale</option>
-            <option value="21:9">Wide</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Varianti</label>
-          <select id="imgVariants">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="4">4</option>
-          </select>
-        </div>
-      </div>
-      <small>Zyro genera prompt pronti per servizi di immagini AI (nessun link).</small>
-      <div class="modal-footer">
-        <button class="btn btn-primary" onclick="generateImagePrompts()">Genera prompt</button>
-      </div>
-      <div id="imgResults" class="image-grid"></div>
-    </div>
-  </div>
-</div>
+  <script>
+    // ===== CONFIG =====
+    const API_URL = "https://zyro-ai-u3ta.onrender.com/api/chat"; // cambia se serve
 
-<!-- PULSANTE PAGINA LEGALE (centrato in alto) -->
-<div style="
-  width: 100%;
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-">
-  <button id="openLegal" style="
-    padding: 10px 20px;
-    background: #1f6feb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-  ">
-    Pagina legale
-  </button>
-</div>
+    // ===== ELEMENTI =====
+    const body = document.body;
+    const chatMessages = document.getElementById("chatMessages");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const themeToggle = document.getElementById("themeToggle");
+    const focusToggle = document.getElementById("focusToggle");
+    const focusLabel = document.getElementById("focusLabel");
+    const statsMessages = document.getElementById("statsMessages");
+    const statsSessions = document.getElementById("statsSessions");
+    const statsDetails = document.getElementById("statsDetails");
+    const clearChatBtn = document.getElementById("clearChat");
+    const exportLastBtn = document.getElementById("exportLast");
+    const quickButtons = document.querySelectorAll("[data-quick]");
+    const colorDots = document.querySelectorAll(".color-dot");
 
-<!-- POPUP LEGALE COMPLETO -->
-<div id="legalOverlay" style="
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(4px);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-">
+    // ===== STATO =====
+    let messages = [];
+    let stats = {
+      user: 0,
+      ai: 0,
+      lastUse: null
+    };
+    let sessionId = null;
+    let focusMode = false;
 
-  <div id="legalPopup" style="
-    width: 90%;
-    max-width: 900px;
-    max-height: 80vh;
-    background: white;
-    border-radius: 14px;
-    padding: 24px;
-    overflow-y: auto;
-    box-shadow: 0 0 25px rgba(0,0,0,0.25);
-    color: #1a1a1a !important; /* TESTO LEGGIBILE */
-  ">
-
-    <button id="closeLegal" style="
-      float: right;
-      background: #e63946;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-bottom: 10px;
-    ">
-      Chiudi
-    </button>
-
-    <h2>Pagina Legale Completa — Zyro AI</h2>
-    <p class="muted">Ultimo aggiornamento: 26/04/2026</p>
-
-    <h3>1. Introduzione</h3>
-    <p>
-      Benvenuto su <strong>Zyro AI</strong> (“Servizio”). Questa pagina descrive:
-    </p>
-    <ul>
-      <li>come vengono trattati i dati degli utenti;</li>
-      <li>quali sono i diritti degli utenti;</li>
-      <li>le regole per l’utilizzo del Servizio;</li>
-      <li>le responsabilità e i limiti legali;</li>
-      <li>le tecnologie utilizzate (cookie, log, hosting).</li>
-    </ul>
-
-    <h3>2. Titolare del trattamento</h3>
-    <p>
-      Il Titolare del trattamento dei dati personali relativi all’utilizzo di Zyro AI è:
-    </p>
-
-    <p>
-      <strong>Il Genitore/Tutore Legale del Sviluppatore Minorenne</strong><br>
-      In qualità di responsabile legale del progetto Zyro AI.<br>
-      Il contatto con il Titolare può essere richiesto tramite canale dedicato.
-    </p>
-
-    <p>
-      Il minore sviluppatore del progetto non riveste alcun ruolo giuridico nella gestione
-      dei dati personali, che rimane interamente in capo al Titolare adulto sopra indicato.
-    </p>
-
-    <h3>3. Dati raccolti</h3>
-    <h4>3.1 Dati raccolti automaticamente</h4>
-    <ul>
-      <li>Indirizzo IP</li>
-      <li>Tipo di dispositivo e browser</li>
-      <li>Log tecnici del server</li>
-      <li>Errori e richieste inviate al backend</li>
-    </ul>
-
-    <h4>3.2 Dati forniti volontariamente</h4>
-    <p>
-      I messaggi inviati all’AI vengono elaborati per generare risposte.
-      Nessun dato viene venduto o usato per profilazione.
-    </p>
-
-    <h3>4. Finalità del trattamento</h3>
-    <ul>
-      <li>Fornire risposte tramite Zyro AI</li>
-      <li>Migliorare stabilità e sicurezza</li>
-      <li>Prevenire abusi</li>
-      <li>Analisi tecniche anonime</li>
-    </ul>
-
-    <h3>5. Base giuridica</h3>
-    <ul>
-      <li>Art. 6(1)(b) GDPR – esecuzione del servizio</li>
-      <li>Art. 6(1)(f) GDPR – legittimo interesse</li>
-    </ul>
-
-    <h3>6. Conservazione dei dati</h3>
-    <ul>
-      <li>Log server: 7–30 giorni</li>
-      <li>Dati di utilizzo: temporanei</li>
-      <li>Nessuna conservazione per marketing</li>
-    </ul>
-
-    <h3>7. Condivisione dei dati</h3>
-    <p>
-      I dati possono essere trattati da:
-    </p>
-    <ul>
-      <li>GitHub Pages (frontend)</li>
-      <li>Render.com (backend)</li>
-    </ul>
-
-    <h3>8. Cookie</h3>
-    <p>
-      Zyro AI utilizza solo cookie tecnici necessari al funzionamento.
-    </p>
-
-    <h3>9. Diritti dell’utente</h3>
-    <ul>
-      <li>Accesso ai dati</li>
-      <li>Cancellazione</li>
-      <li>Limitazione del trattamento</li>
-      <li>Opposizione</li>
-      <li>Portabilità</li>
-    </ul>
-
-    <h3>10. Sicurezza</h3>
-    <ul>
-      <li>HTTPS</li>
-      <li>Log minimi</li>
-      <li>Nessuna profilazione</li>
-      <li>Protezione tecnica dei dati</li>
-    </ul>
-
-    <h3>11. Termini di Servizio</h3>
-
-    <h4>11.1 Uso consentito</h4>
-    <ul>
-      <li>Uso lecito e rispettoso</li>
-      <li>Divieto di attività illegali</li>
-      <li>Divieto di contenuti offensivi</li>
-      <li>Divieto di aggirare limiti tecnici</li>
-    </ul>
-
-    <h4>11.2 Nessuna garanzia</h4>
-    <p>
-      Zyro AI è fornito “così com’è”. Non garantiamo:
-    </p>
-    <ul>
-      <li>accuratezza delle risposte</li>
-      <li>disponibilità continua</li>
-      <li>assenza di errori</li>
-    </ul>
-
-    <h4>11.3 Limitazione di responsabilità</h4>
-    <ul>
-      <li>Danni derivanti dall’uso improprio</li>
-      <li>Decisioni prese sulla base dell’AI</li>
-      <li>Interruzioni o malfunzionamenti tecnici</li>
-    </ul>
-
-    <h4>11.4 Copyright dei contenuti generati dall’AI</h4>
-    <p>
-      I contenuti generati (“Output”) possono essere utilizzati dall’utente,
-      ma senza garanzia di originalità o assenza di violazioni di diritti di terzi.
-      L’utente è responsabile dell’uso che ne fa.
-    </p>
-
-    <h4>11.5 Copyright del logo e degli elementi grafici</h4>
-    <p>
-      Il logo, l’icona e tutti gli elementi grafici di Zyro AI sono di proprietà
-      esclusiva del Titolare. È severamente vietato copiarli, scaricarli, modificarli,
-      distribuirli o usarli senza autorizzazione.
-    </p>
-
-    <h4>11.6 Clausola Anti‑Abusi Avanzata</h4>
-    <p>
-      È vietato utilizzare Zyro AI per attività illegali, dannose o che violino
-      diritti di terzi.
-    </p>
-
-    <h4>11.7 Clausola AI Generativa</h4>
-    <p>
-      Zyro AI genera contenuti automaticamente tramite modelli di intelligenza
-      artificiale. Le risposte possono contenere errori o informazioni non aggiornate.
-    </p>
-
-    <h4>11.8 Servizi Esterni</h4>
-    <p>
-      Zyro AI utilizza servizi esterni come GitHub Pages e Render.com.
-    </p>
-
-    <h4>11.9 Contenuti Sensibili e Limitazioni d’Uso</h4>
-    <p>
-      Zyro AI non sostituisce consulenze professionali.
-    </p>
-
-    <h4>11.10 DMCA</h4>
-    <p>
-      Per segnalazioni di copyright, contatto disponibile su richiesta.
-    </p>
-
-    <h4>11.11 Clausola di Manleva</h4>
-    <p>
-      L’utente manleva il Titolare da responsabilità derivanti dall’uso improprio.
-    </p>
-
-    <h4>11.12 Età Minima</h4>
-    <p>
-      Per utilizzare Zyro AI, l’utente deve avere almeno 13 anni.
-    </p>
-
-    <h4>11.13 Giurisdizione</h4>
-    <p>
-      I presenti Termini sono regolati dalla legge italiana.
-    </p>
-
-    <h4>11.14 Separabilità</h4>
-    <p>
-      Se una clausola è invalida, le altre restano valide.
-    </p>
-
-    <h4>11.15 Limitazione di Responsabilità Estesa</h4>
-    <p>
-      Il Titolare non è responsabile per danni indiretti, perdita di dati,
-      interruzioni o uso improprio del Servizio.
-    </p>
-
-    <h4>11.16 Divieto di Uso Commerciale</h4>
-    <p>
-      È vietato utilizzare Zyro AI per scopi commerciali senza autorizzazione.
-    </p>
-
-    <h4>11.17 Forza Maggiore</h4>
-    <p>
-      Il Titolare non è responsabile per eventi fuori dal proprio controllo.
-    </p>
-
-    <h4>11.18 Esclusione di Garanzie Tecniche</h4>
-    <p>
-      Il Servizio è fornito “così com’è” senza garanzie tecniche.
-    </p>
-
-    <h4>11.19 Limitazione Responsabilità Output AI</h4>
-    <p>
-      Il Titolare non è responsabile per errori, inesattezze o contenuti generati
-      automaticamente dall’AI.
-    </p>
-
-    <h3>12. Modifiche</h3>
-    <p>
-      Questa pagina può essere aggiornata in qualsiasi momento.
-    </p>
-    <h3>13. Contatti</h3>
-    <p>
-      Il contatto con il Titolare può essere richiesto tramite canale dedicato.
-    </p>
-
-  </div>
-</div>
-
-<script>
-const openBtn = document.getElementById("openLegal");
-const closeBtn = document.getElementById("closeLegal");
-const overlay = document.getElementById("legalOverlay");
-
-openBtn.onclick = () => overlay.style.display = "flex";
-closeBtn.onclick = () => overlay.style.display = "none";
-overlay.onclick = (e) => { if (e.target === overlay) overlay.style.display = "none"; };
-</script>
-  
-<!-- MODAL VIDEO -->
-<div class="modal-backdrop" id="videoModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">🎬 Crea video AI</div>
-      <button class="btn btn-icon" onclick="closeModal('videoModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="field">
-        <label>Descrizione video</label>
-        <textarea id="videoPrompt" placeholder="Descrivi il video che vuoi creare..."></textarea>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>Durata</label>
-          <select id="videoDuration">
-            <option value="5">5 secondi</option>
-            <option value="10">10 secondi</option>
-            <option value="15">15 secondi</option>
-            <option value="30">30 secondi</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Stile visivo</label>
-          <select id="videoStyle">
-            <option value="cinematico">Cinematografico</option>
-            <option value="anime">Anime</option>
-            <option value="realistico">Realistico</option>
-            <option value="cartoon">Cartoon</option>
-            <option value="cyberpunk">Cyberpunk</option>
-          </select>
-        </div>
-      </div>
-      <small>Zyro genera prompt video pronti per servizi AI (nessun link).</small>
-      <div class="modal-footer">
-        <button class="btn btn-primary" onclick="generateVideoPrompts()">Genera prompt</button>
-      </div>
-      <div id="videoResults" class="section"></div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL TOOL GENERICI -->
-<div class="modal-backdrop" id="toolModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="toolTitle">Strumento</div>
-      <button class="btn btn-icon" onclick="closeModal('toolModal')">✕</button>
-    </div>
-    <div class="modal-body" id="toolBody"></div>
-  </div>
-</div>
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <img id="lightboxImg" src="" alt="Preview" />
-</div>
-
-<div style="
-  text-align:center;
-  font-size:10px;
-  color:#6b7280;
-  margin-top:8px;
-  margin-bottom:12px;
-">
-  Questa è un’AI e può commettere errori
-</div>
-
-<script>
-  var API = "https://mentora-ai-u3ta.onrender.com/api/chat";
-  var chatHist = [];
-  var isLoading = false;
-  var curStyle = "normal";
-  var curUser = JSON.parse(localStorage.getItem("Zyro_user") || "null") || { name: "Ospite", lang: "it", voice: "off" };
-  var recognition = null;
-  var isListening = false;
-  var cameraStream = null;
-
-  function G(id){ return document.getElementById(id); }
-
-  function toast(msg, ms){
-    var t = G("toast");
-    t.textContent = msg;
-    t.style.display = "block";
-    setTimeout(function(){ t.style.display = "none"; }, ms || 2200);
-  }
-
-  function appendMsg(role, text){
-    var area = G("chatArea");
-    var wrap = document.createElement("div");
-    wrap.className = "chat-msg " + (role === "user" ? "user" : "assistant");
-    var avatar = document.createElement("div");
-    avatar.className = "avatar " + (role === "user" ? "user" : "assistant");
-    avatar.textContent = role === "user" ? (curUser.name ? curUser.name[0].toUpperCase() : "U") : "M";
-    var bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = text;
-    wrap.appendChild(avatar);
-    wrap.appendChild(bubble);
-    area.appendChild(wrap);
-    area.scrollTop = area.scrollHeight;
-  }
-
-  function autoResize(el){
-    el.style.height = "auto";
-    el.style.height = el.scrollHeight + "px";
-  }
-
-  function handleKey(e){
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMsg();
+    // ===== UTILS =====
+    function saveState() {
+      localStorage.setItem("zyro_messages", JSON.stringify(messages));
+      localStorage.setItem("zyro_stats", JSON.stringify(stats));
+      localStorage.setItem("zyro_theme", body.getAttribute("data-theme") || "dark");
+      localStorage.setItem("zyro_accent", getComputedStyle(document.documentElement).getPropertyValue("--accent-color").trim());
+      localStorage.setItem("zyro_focus", focusMode ? "1" : "0");
+      localStorage.setItem("zyro_session", sessionId);
     }
-  }
 
-  function buildStyleInstruction(){
-    switch (curStyle) {
-      case "simple": return "Rispondi in modo molto semplice, come se parlassi a un principiante.";
-      case "detailed": return "Rispondi in modo molto dettagliato, con spiegazioni approfondite e strutturate.";
-      case "bullets": return "Rispondi usando punti elenco chiari e ordinati.";
-      case "short": return "Rispondi in modo molto breve e conciso, massimo 3 frasi.";
-      case "expert": return "Rispondi come un esperto della materia, con linguaggio tecnico ma chiaro.";
-      case "funny": return "Rispondi con un tono leggermente divertente, usando metafore o esempi simpatici.";
-      case "socratic": return "Rispondi in modo socratico, facendo domande che aiutano a ragionare.";
-      default: return "Rispondi in modo naturale e chiaro.";
-    }
-  }
+    function loadState() {
+      const savedMessages = localStorage.getItem("zyro_messages");
+      const savedStats = localStorage.getItem("zyro_stats");
+      const savedTheme = localStorage.getItem("zyro_theme");
+      const savedAccent = localStorage.getItem("zyro_accent");
+      const savedFocus = localStorage.getItem("zyro_focus");
+      const savedSession = localStorage.getItem("zyro_session");
 
-  async function callZyro(prompt){
-    try {
-      var res = await fetch("https://mentora-ai-u3ta.onrender.com/api/chat", {
-
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: prompt })
-      });
-      var data = await res.json();
-      return data.reply || "Nessuna risposta dal modello.";
-    } catch(e){
-      console.error(e);
-      return "Errore: " + e.message;
-    }
-  }
-
-  async function sendMsg(extraPrompt){
-    if (isLoading) return;
-    var input = G("chatInput");
-    var text = input.value.trim();
-    if (!text && !extraPrompt) return;
-
-    var userText = extraPrompt ? extraPrompt : text;
-
-    // Risposta speciale: "Chi ti ha creato?"
-    var lower = userText.toLowerCase();
-    if (
-      lower.includes("chi ti ha creato") ||
-      lower.includes("chi è il tuo creatore") ||
-      lower.includes("chi ti ha fatto") ||
-      lower.includes("chi ti ha programmato")
-    ) {
-      var special = "Sono stata creata da derry20_official, una persona straordinaria che ha costruito Zyro con passione, creatività e tanta cura. Sono qui grazie alla sua visione e al suo impegno!";
-      appendMsg("assistant", special);
-      chatHist.push({ role: "assistant", content: special });
-      isLoading = false;
-      G('sendBtn').textContent = '➤';
-      if (!extraPrompt) {
-        appendMsg("user", userText);
-        chatHist.unshift({ role: "user", content: userText });
+      if (savedMessages) {
+        messages = JSON.parse(savedMessages);
       }
-      return;
+      if (savedStats) {
+        stats = JSON.parse(savedStats);
+      }
+      if (savedTheme) {
+        body.setAttribute("data-theme", savedTheme);
+      }
+      if (savedAccent) {
+        document.documentElement.style.setProperty("--accent-color", savedAccent);
+      }
+      if (savedFocus === "1") {
+        focusMode = true;
+        applyFocusMode();
+      }
+      if (savedSession) {
+        sessionId = savedSession;
+      } else {
+        sessionId = "sess-" + Math.random().toString(36).slice(2, 10);
+      }
     }
 
-    if (!extraPrompt) {
-      appendMsg("user", userText);
-      chatHist.push({ role: "user", content: userText });
+    function updateStatsUI() {
+      const total = stats.user + stats.ai;
+      statsMessages.textContent = total + " messaggi";
+      statsSessions.textContent = "Sessione: " + sessionId;
+      statsDetails.innerHTML =
+        "Messaggi utente: " + stats.user + "<br>" +
+        "Messaggi AI: " + stats.ai + "<br>" +
+        "Ultimo utilizzo: " + (stats.lastUse || "—");
     }
 
-    input.value = "";
-    autoResize(input);
-    isLoading = true;
-    G("sendBtn").textContent = "…";
+    function renderMessages() {
+      chatMessages.innerHTML = "";
+      messages.forEach((msg, index) => {
+        const div = document.createElement("div");
+        div.className = "message " + (msg.role === "user" ? "user" : "ai");
+        const content = document.createElement("div");
+        content.textContent = msg.content;
+        div.appendChild(content);
 
-    var styleInstr = buildStyleInstruction();
-    var historySnippet = chatHist.slice(-6).map(m => (m.role === "user" ? "Utente: " : "Zyro: ") + m.content).join("\n");
-    var prompt = "Sei Zyro, un assistente AI per studio e creatività.\n" +
-                 "Stile: " + styleInstr + "\n\n" +
-                 (historySnippet ? "Contesto recente:\n" + historySnippet + "\n\n" : "") +
-                 "Nuovo messaggio dell'utente:\n" + userText;
+        const meta = document.createElement("div");
+        meta.className = "message-meta";
+        meta.innerHTML = `<span>${msg.role === "user" ? "Tu" : "Zyro AI"}</span><span>${msg.time || ""}</span>`;
+        div.appendChild(meta);
 
-    var reply = await callZyro(prompt);
-    appendMsg("assistant", reply);
-    chatHist.push({ role: "assistant", content: reply });
+        if (msg.role === "ai") {
+          const actions = document.createElement("div");
+          actions.className = "message-actions";
 
-    if (curUser.voice === "on") speak(reply);
+          const speakBtn = document.createElement("button");
+          speakBtn.textContent = "🔊 Ascolta";
+          speakBtn.onclick = () => speakText(msg.content);
 
-    isLoading = false;
-    G("sendBtn").textContent = "➤";
-  }
+          const copyBtn = document.createElement("button");
+          copyBtn.textContent = "📋 Copia";
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(msg.content).catch(() => {});
+          };
 
-  document.addEventListener("DOMContentLoaded", function(){
-    document.querySelectorAll(".quick-actions button").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var action = btn.getAttribute("data-action");
-        var last = chatHist.filter(m => m.role === "assistant").slice(-1)[0];
-        if (!last) { toast("Nessuna risposta recente da usare."); return; }
-        var base = last.content;
-        var prompt = "";
-        if (action === "regenerate") {
-          prompt = "Rigenera una risposta alternativa alla seguente risposta che hai dato prima:\n\n" + base;
-        } else if (action === "summarize") {
-          prompt = "Riassumi in modo chiaro e sintetico questa risposta che hai dato:\n\n" + base;
-        } else if (action === "explain") {
-          prompt = "Spiega in modo più semplice e dettagliato questa risposta che hai dato:\n\n" + base;
-        } else if (action === "example") {
-          prompt = "Fornisci uno o più esempi pratici relativi a questa risposta che hai dato:\n\n" + base;
-        } else if (action === "read") {
-          if (curUser.voice !== "on") { toast("Attiva la lettura vocale nelle preferenze."); return; }
-          speak(base);
-          return;
+          actions.appendChild(speakBtn);
+          actions.appendChild(copyBtn);
+          div.appendChild(actions);
         }
-        sendMsg(prompt);
+
+        chatMessages.appendChild(div);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addMessage(role, content) {
+      const now = new Date();
+      const time = now.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      messages.push({ role, content, time });
+      if (role === "user") stats.user++;
+      if (role === "ai") stats.ai++;
+      stats.lastUse = now.toLocaleString("it-IT");
+      saveState();
+      renderMessages();
+      updateStatsUI();
+    }
+
+    function speakText(text) {
+      if (!("speechSynthesis" in window)) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "it-IT";
+      utter.rate = 1;
+      utter.pitch = 1;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function applyFocusMode() {
+      if (focusMode) {
+        document.querySelector(".sidebar").style.display = "none";
+        focusLabel.textContent = "Modalità Focus: ON";
+      } else {
+        document.querySelector(".sidebar").style.display = "";
+        focusLabel.textContent = "Modalità Focus: OFF";
+      }
+      saveState();
+    }
+
+    // ===== EVENTI =====
+    themeToggle.addEventListener("click", () => {
+      const current = body.getAttribute("data-theme") || "dark";
+      const next = current === "dark" ? "light" : "dark";
+      body.setAttribute("data-theme", next);
+      saveState();
+    });
+
+    focusToggle.addEventListener("click", () => {
+      focusMode = !focusMode;
+      applyFocusMode();
+    });
+
+    colorDots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        const color = dot.getAttribute("data-color");
+        document.documentElement.style.setProperty("--accent-color", color);
+        saveState();
       });
     });
-  });
 
-  G("styleSelector").addEventListener("click", function(e){
-    var dd = G("styleDropdown");
-    dd.style.display = dd.style.display === "flex" ? "none" : "flex";
-    var rect = e.currentTarget.getBoundingClientRect();
-    dd.style.top = (rect.bottom + window.scrollY + 4) + "px";
-    dd.style.left = (rect.left + window.scrollX) + "px";
-  });
-
-  document.querySelectorAll(".style-option").forEach(function(opt){
-    opt.addEventListener("click", function(){
-      var style = opt.getAttribute("data-style");
-      curStyle = style;
-      var spans = opt.querySelectorAll("span");
-      G("styleEmoji").textContent = spans[0].textContent;
-      G("styleLabel").textContent = spans[1].textContent;
-      G("styleDropdown").style.display = "none";
-      toast("Stile risposta: " + spans[1].textContent);
+    clearChatBtn.addEventListener("click", () => {
+      if (!confirm("Vuoi davvero cancellare tutta la cronologia?")) return;
+      messages = [];
+      stats.user = 0;
+      stats.ai = 0;
+      stats.lastUse = null;
+      saveState();
+      renderMessages();
+      updateStatsUI();
     });
-  });
 
-  document.addEventListener("click", function(e){
-    var dd = G("styleDropdown");
-    if (!dd.contains(e.target) && e.target !== G("styleSelector")) {
-      dd.style.display = "none";
-    }
-  });
-
-  function applyUser(){
-    G("userLabel").textContent = curUser.name || "Ospite";
-    G("userName").value = curUser.name || "";
-    G("langSelect").value = curUser.lang || "it";
-    G("voiceToggle").value = curUser.voice || "off";
-  }
-
-  function saveUserPrefs(){
-    curUser.name = G("userName").value.trim() || "Ospite";
-    curUser.lang = G("langSelect").value;
-    curUser.voice = G("voiceToggle").value;
-    localStorage.setItem("Zyro_user", JSON.stringify(curUser));
-    applyUser();
-    toast("Preferenze salvate.");
-  }
-
-  G("userBtn").addEventListener("click", function(){
-    G("userName").focus();
-  });
-
-  G("themeBtn").addEventListener("click", function(){
-    toast("Tema avanzato non ancora configurato (placeholder).");
-  });
-
-  G("newChatBtn").addEventListener("click", function(){
-    chatHist = [];
-    G("chatArea").innerHTML = "";
-    toast("Nuova chat avviata.");
-  });
-
-  function initRecognition(){
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return null;
-    var r = new SR();
-    r.lang = curUser.lang === "en" ? "en-US" : "it-IT";
-    r.interimResults = false;
-    r.maxAlternatives = 1;
-    return r;
-  }
-
-  function startListening(){
-    if (isListening) return;
-    recognition = initRecognition();
-    if (!recognition) { toast("Riconoscimento vocale non supportato."); return; }
-    isListening = true;
-    G("audioIndicator").style.display = "inline-flex";
-    recognition.start();
-    recognition.onresult = function(e){
-      var text = e.results[0][0].transcript;
-      G("chatInput").value = text;
-      autoResize(G("chatInput"));
-    };
-    recognition.onerror = function(){ toast("Errore riconoscimento vocale."); };
-    recognition.onend = function(){
-      isListening = false;
-      G("audioIndicator").style.display = "none";
-    };
-  }
-
-  function stopListening(){
-    if (!isListening || !recognition) return;
-    recognition.stop();
-  }
-
-  G("micBtn").addEventListener("click", function(){
-    if (isListening) stopListening(); else startListening();
-  });
-
-  function speak(text){
-    if (!("speechSynthesis" in window)) { toast("Sintesi vocale non supportata."); return; }
-    var u = new SpeechSynthesisUtterance(text);
-    u.lang = curUser.lang === "en" ? "en-US" : "it-IT";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  }
-
-  function openModal(id){ G(id).style.display = "flex"; }
-  function closeModal(id){ G(id).style.display = "none"; }
-
-  function openAttachModal(){ openModal("attachModal"); }
-
-  async function startCamera(){
-    try {
-      cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-      var video = G("cameraPreview");
-      video.srcObject = cameraStream;
-      video.style.display = "block";
-      toast("Fotocamera attiva. Scatta screenshot con strumenti esterni (placeholder).");
-    } catch(e){
-      toast("Impossibile accedere alla fotocamera.");
-    }
-  }
-
-  function stopCamera(){
-    var video = G("cameraPreview");
-    video.style.display = "none";
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(t => t.stop());
-      cameraStream = null;
-    }
-  }
-
-  function handleImageUpload(e){
-    var file = e.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = async function(ev){
-      var dataUrl = ev.target.result;
-      appendMsg("user", "Ho caricato questa immagine. Puoi dirmi cos'è, a cosa serve e una curiosità?");
-      appendMsg("assistant", "[Immagine caricata. Zyro la sta analizzando...]");
-      var prompt = "L'utente ha caricato un'immagine in base64. " +
-                   "Analizza l'immagine e rispondi con:\n" +
-                   "1) Cosa rappresenta\n2) A cosa serve\n3) Una curiosità interessante\n\n" +
-                   "NON descrivere il base64, ma interpreta il contenuto visivo.\n\n" +
-                   "Immagine (base64):\n" + dataUrl;
-      var reply = await callZyro(prompt);
-      appendMsg("assistant", reply);
-      chatHist.push({ role: "assistant", content: reply });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function handleVideoUpload(e){
-    var file = e.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = async function(ev){
-      var dataUrl = ev.target.result;
-      appendMsg("user", "Ho caricato questo video. Puoi descriverlo e dirmi cosa potrei imparare da esso?");
-      appendMsg("assistant", "[Video caricato. Zyro lo sta analizzando...]");
-      var prompt = "L'utente ha caricato un video (base64 parziale). " +
-                   "In base a ciò che puoi dedurre, rispondi con:\n" +
-                   "1) Cosa mostra il video\n2) Cosa sta succedendo\n3) Una curiosità o un dettaglio utile.\n\n" +
-                   "NON descrivere il base64, ma interpreta il contenuto come se fosse un video reale.\n\n" +
-                   "Video (base64 parziale):\n" + dataUrl.slice(0, 5000);
-      var reply = await callZyro(prompt);
-      appendMsg("assistant", reply);
-      chatHist.push({ role: "assistant", content: reply });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function showLightbox(src){
-    G("lightboxImg").src = src;
-    G("lightbox").style.display = "flex";
-  }
-  function closeLightbox(){
-    G("lightbox").style.display = "none";
-    G("lightboxImg").src = "";
-  }
-
-  function openImageModal(){ openModal("imageModal"); }
-  function openVideoModal(){ openModal("videoModal"); }
-
-  async function generateImagePrompts(){
-    var desc = G("imgPrompt").value.trim();
-    if (!desc) { toast("Scrivi una descrizione per l'immagine."); return; }
-    var style = G("imgStyle").value;
-    var ratio = G("imgRatio").value;
-    var variants = G("imgVariants").value;
-    var prompt = "Genera " + variants + " prompt per immagini AI basate su questa descrizione:\n\n" +
-                 desc + "\n\n" +
-                 "Stile: " + style + "\n" +
-                 "Proporzioni: " + ratio + "\n\n" +
-                 "Scrivi i prompt in modo che siano pronti da incollare in generatori di immagini AI. " +
-                 "Non aggiungere spiegazioni, solo i prompt.";
-    var reply = await callZyro(prompt);
-    var container = G("imgResults");
-    container.innerHTML = "";
-    var parts = reply.split(/\n{2,}/);
-    parts.forEach(function(p, idx){
-      var card = document.createElement("div");
-      card.className = "image-card";
-      card.textContent = p.trim() || ("Prompt " + (idx+1));
-      card.onclick = function(){
-        navigator.clipboard.writeText(p.trim());
-        toast("Prompt copiato.");
-      };
-      var btn = document.createElement("button");
-      btn.className = "btn";
-      btn.textContent = "Copia";
-      btn.onclick = function(ev){
-        ev.stopPropagation();
-        navigator.clipboard.writeText(p.trim());
-        toast("Prompt copiato.");
-      };
-      card.appendChild(btn);
-      container.appendChild(card);
+    exportLastBtn.addEventListener("click", () => {
+      const lastAi = [...messages].reverse().find(m => m.role === "ai");
+      if (!lastAi) {
+        alert("Nessuna risposta AI da condividere.");
+        return;
+      }
+      navigator.clipboard.writeText(lastAi.content)
+        .then(() => alert("Risposta copiata! Incollala dove vuoi (TikTok, Instagram, Discord, ecc.)."))
+        .catch(() => alert("Impossibile copiare automaticamente, seleziona e copia manualmente."));
     });
-  }
 
-  async function generateVideoPrompts(){
-    var desc = G("videoPrompt").value.trim();
-    if (!desc) { toast("Scrivi una descrizione per il video."); return; }
-    var dur = G("videoDuration").value;
-    var style = G("videoStyle").value;
-    var prompt = "Genera 3 prompt video per generatori di video AI.\n\n" +
-                 "Descrizione video: " + desc + "\n" +
-                 "Durata: circa " + dur + " secondi\n" +
-                 "Stile visivo: " + style + "\n\n" +
-                 "Scrivi solo i prompt, senza spiegazioni.";
-    var reply = await callZyro(prompt);
-    var box = G("videoResults");
-    box.innerHTML = "";
-    var parts = reply.split(/\n{2,}/);
-    parts.forEach(function(p, idx){
-      var div = document.createElement("div");
-      div.style.marginBottom = "4px";
-      div.textContent = p.trim() || ("Prompt " + (idx+1));
-      div.onclick = function(){
-        navigator.clipboard.writeText(p.trim());
-        toast("Prompt copiato.");
-      };
-      box.appendChild(div);
+    quickButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const text = btn.getAttribute("data-quick");
+        userInput.value = text;
+        userInput.focus();
+      });
     });
-  }
 
-  function openTool(type){
-    var body = G("toolBody");
-    var title = G("toolTitle");
-    body.innerHTML = "";
-    if (type === "quiz") {
-      title.textContent = "🎯 Genera Quiz";
-      body.innerHTML = `
-        <div class="field">
-          <label>Argomento del quiz</label>
-          <input id="quizTopic" placeholder="Es. Rivoluzione francese, Derivate, HTML base..." />
-        </div>
-        <div class="field">
-          <label>Numero domande</label>
-          <select id="quizCount">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" onclick="generateQuiz()">Genera quiz</button>
-        <div id="quizResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "flashcards") {
-      title.textContent = "🃏 Flashcard";
-      body.innerHTML = `
-        <div class="field">
-          <label>Argomento del deck</label>
-          <input id="fcTopic" placeholder="Es. Capitali europee, Verbi irregolari..." />
-        </div>
-        <div class="field">
-          <label>Numero di flashcard</label>
-          <select id="fcCount">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" onclick="generateFlashcards()">Genera flashcard</button>
-        <div id="fcResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "story") {
-      title.textContent = "📖 Genera storia";
-      body.innerHTML = `
-        <div class="field">
-          <label>Genere</label>
-          <input id="storyGenre" placeholder="Fantasy, horror, romantico, sci-fi..." />
-        </div>
-        <div class="field">
-          <label>Protagonista</label>
-          <input id="storyHero" placeholder="Chi è il protagonista?" />
-        </div>
-        <div class="field">
-          <label>Ambientazione</label>
-          <input id="storySetting" placeholder="Dove e quando si svolge?" />
-        </div>
-        <div class="field">
-          <label>Lunghezza</label>
-          <select id="storyLength">
-            <option value="breve">Breve</option>
-            <option value="media">Media</option>
-            <option value="lunga">Lunga</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" onclick="generateStory()">Genera storia</button>
-        <div id="storyResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "correct") {
-      title.textContent = "✍️ Correggi testo";
-      body.innerHTML = `
-        <div class="field">
-          <label>Testo da correggere / migliorare</label>
-          <textarea id="correctInput" placeholder="Incolla qui il testo..."></textarea>
-        </div>
-        <div class="row">
-          <button class="btn" onclick="correctText('correggi')">Correggi errori</button>
-          <button class="btn" onclick="correctText('migliora')">Migliora stile</button>
-        </div>
-        <div id="correctResult" class="section" style="margin-top:6px;"></div>
-        <button class="btn" onclick="copyCorrect()">Copia testo</button>
-      `;
-    } else if (type === "summary") {
-      title.textContent = "📋 Riassumi testo";
-      body.innerHTML = `
-        <div class="field">
-          <label>Testo da riassumere</label>
-          <textarea id="summaryInput" placeholder="Incolla qui il testo..."></textarea>
-        </div>
-        <div class="row">
-          <button class="btn" onclick="summarizeText('punti')">Punti chiave</button>
-          <button class="btn" onclick="summarizeText('breve')">Riassunto breve</button>
-        </div>
-        <div id="summaryResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "translate") {
-      title.textContent = "🌍 Traduci testo";
-      body.innerHTML = `
-        <div class="field">
-          <label>Testo da tradurre</label>
-          <textarea id="translateInput" placeholder="Incolla qui il testo..."></textarea>
-        </div>
-        <div class="field">
-          <label>Lingua di destinazione</label>
-          <input id="translateLang" placeholder="Es. inglese, spagnolo, francese..." />
-        </div>
-        <button class="btn btn-primary" onclick="translateText()">Traduci</button>
-        <div id="translateResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "explain") {
-      title.textContent = "🔍 Spiega meglio";
-      body.innerHTML = `
-        <div class="field">
-          <label>Testo o concetto da spiegare</label>
-          <textarea id="explainInput" placeholder="Incolla qui il testo o il concetto..."></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="explainText()">Spiega</button>
-        <div id="explainResult" class="section" style="margin-top:6px;"></div>
-      `;
-    } else if (type === "ideas") {
-      title.textContent = "💡 Genera idee";
-      body.innerHTML = `
-        <div class="field">
-          <label>Contesto / obiettivo</label>
-          <textarea id="ideasInput" placeholder="Es. idee per contenuti, progetti, studio..."></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="generateIdeas()">Genera idee</button>
-        <div id="ideasResult" class="section" style="margin-top:6px;"></div>
-      `;
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      addMessage("user", text);
+      userInput.value = "";
+      callAPI(text);
     }
-    openModal("toolModal");
-  }
 
-  async function generateQuiz(){
-    var topic = G("quizTopic").value.trim();
-    var count = G("quizCount").value;
-    if (!topic) { toast("Inserisci un argomento."); return; }
-    var prompt = "Crea un quiz a scelta multipla sull'argomento: " + topic + ".\n" +
-                 "Numero di domande: " + count + ".\n" +
-                 "Per ogni domanda fornisci: domanda, 4 opzioni (A-D), risposta corretta e breve spiegazione.\n" +
-                 "Formatta in modo chiaro.";
-    G("quizResult").textContent = await callZyro(prompt);
-  }
+    async function callAPI(message) {
+      sendBtn.disabled = true;
+      sendBtn.textContent = "…";
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message })
+        });
+        if (!res.ok) {
+          throw new Error("Errore API: " + res.status);
+        }
+        const data = await res.json();
+        addMessage("ai", data.reply || "Non ho ricevuto una risposta valida.");
+      } catch (err) {
+        console.error(err);
+        addMessage("ai", "Si è verificato un errore nel contattare il server. Riprova più tardi.");
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = "Invia";
+      }
+    }
 
-  async function generateFlashcards(){
-    var topic = G("fcTopic").value.trim();
-    var count = G("fcCount").value;
-    if (!topic) { toast("Inserisci un argomento."); return; }
-    var prompt = "Crea " + count + " flashcard sull'argomento: " + topic + ".\n" +
-                 "Ogni flashcard deve avere fronte (domanda/termine) e retro (risposta/spiegazione breve).\n" +
-                 "Formatta in modo chiaro, numerando le card.";
-    G("fcResult").textContent = await callZyro(prompt);
-  }
+    // ===== INIT =====
+    loadState();
+    renderMessages();
+    updateStatsUI();
 
-  async function generateStory(){
-    var genre = G("storyGenre").value.trim() || "libero";
-    var hero = G("storyHero").value.trim() || "un protagonista generico";
-    var setting = G("storySetting").value.trim() || "un'ambientazione generica";
-    var length = G("storyLength").value;
-    var lenText = length === "breve" ? "circa 400 parole" : length === "media" ? "circa 800 parole" : "circa 1500 parole";
-    var prompt = "Scrivi una storia " + genre + " con protagonista " + hero + ", ambientata in " + setting + ".\n" +
-                 "Lunghezza: " + lenText + ".\n" +
-                 "Stile narrativo coinvolgente, con inizio, sviluppo e conclusione.";
-    G("storyResult").textContent = await callZyro(prompt);
-  }
-
-  async function correctText(mode){
-    var text = G("correctInput").value.trim();
-    if (!text) { toast("Incolla un testo prima."); return; }
-    var prompt = mode === "correggi"
-      ? "Correggi tutti gli errori grammaticali, ortografici e di punteggiatura in questo testo, mantenendo il significato originale. Rispondi SOLO con il testo corretto:\n\n" + text
-      : "Migliora lo stile di questo testo rendendolo più fluido, elegante e professionale, mantenendo il significato originale. Rispondi SOLO con il testo migliorato:\n\n" + text;
-    G("correctResult").textContent = await callZyro(prompt);
-  }
-
-  function copyCorrect(){
-    var text = G("correctResult").textContent;
-    if (!text) { toast("Niente da copiare."); return; }
-    navigator.clipboard.writeText(text).then(function(){ toast("Testo copiato."); });
-  }
-
-  async function summarizeText(mode){
-    var text = G("summaryInput").value.trim();
-    if (!text) { toast("Incolla un testo prima."); return; }
-    var prompt = mode === "punti"
-      ? "Riassumi questo testo in 5-8 punti chiave, chiari e concisi:\n\n" + text
-      : "Scrivi un riassunto breve (max 120 parole) di questo testo:\n\n" + text;
-    G("summaryResult").textContent = await callZyro(prompt);
-  }
-
-  async function translateText(){
-    var text = G("translateInput").value.trim();
-    var lang = G("translateLang").value.trim() || "inglese";
-    if (!text) { toast("Incolla un testo prima."); return; }
-    var prompt = "Traduci il seguente testo in " + lang + ". " +
-                 "Adatta leggermente la frase per suonare naturale nella lingua di destinazione.\n\n" + text;
-    G("translateResult").textContent = await callZyro(prompt);
-  }
-
-  async function explainText(){
-    var text = G("explainInput").value.trim();
-    if (!text) { toast("Incolla un testo o concetto prima."); return; }
-    var prompt = "Spiega in modo chiaro e comprensibile il seguente testo/concetto. Usa esempi e analogie semplici se utile:\n\n" + text;
-    G("explainResult").textContent = await callZyro(prompt);
-  }
-
-  async function generateIdeas(){
-    var text = G("ideasInput").value.trim();
-    if (!text) { toast("Descrivi il contesto prima."); return; }
-    var prompt = "Genera una lista di idee creative basate su questo contesto/obiettivo:\n\n" + text +
-                 "\n\nOrganizza le idee in elenco, con brevi descrizioni.";
-    G("ideasResult").textContent = await callZyro(prompt);
-  }
-
-  function openShare(){
-    if (!chatHist.length) { toast("Nessuna chat da condividere."); return; }
-    var text = chatHist.map(function(m){
-      return (m.role === "user" ? (curUser.name || "Utente") + ": " : "Zyro: ") + m.content;
-    }).join("\n\n");
-    navigator.clipboard.writeText(text).then(function(){ toast("Chat copiata negli appunti."); });
-  }
-  function copyShareText(){ openShare(); }
-  function downloadShareImg(){ toast("Export immagine chat non implementato (placeholder)."); }
-
-  window.addEventListener("load", function(){
-    applyUser();
-    appendMsg("assistant", "Ciao! Sono Zyro. Possiamo studiare, creare quiz, analizzare testi, immagini e video (via prompt) e generare idee. Da dove vuoi iniziare?");
-  });
-
-  G("sendBtn").addEventListener("click", function(){ sendMsg(); });
-  G("attachBtn").addEventListener("click", openAttachModal);
-  // LETTURA VOCALE (Zyro legge l'ultima risposta)
-function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "it-IT";
-    utter.rate = 1;
-    utter.pitch = 1;
-    speechSynthesis.speak(utter);
-}
-
-document.getElementById("speakBtn").onclick = () => {
-    const lastReply = document.querySelector(".message.bot:last-child")?.innerText;
-    if (lastReply) speak(lastReply);
-};
-
-</script>
+    if (messages.length === 0) {
+      addMessage("ai", "Ciao! Sono Zyro AI. Scrivimi qualcosa o usa uno dei pulsanti rapidi qui sopra.");
+    }
+  </script>
 </body>
 </html>
