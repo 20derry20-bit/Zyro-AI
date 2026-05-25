@@ -900,14 +900,22 @@
     sendBtn.addEventListener("click", sendMessage);
 
     function sendMessage() {
-      const text = userInput.value.trim();
-      // Risposta personalizzata "Chi ti ha creato?"
-if (text.toLowerCase().includes("chi ti ha creato")) {
-    addMessage("ai",
-        "Sono stato creato da un magnifico Developer chiamato derry20_official. " +
-        "Se hai bisogno di aiuto non esitare ad aprire un ticket qui su Discord: https://discord.gg/jSPA39yNge"
-    );
-    return;
+    const text = userInput.value.trim();
+
+    // BLOCCA INVIO SE VUOTO
+    if (!text) return;
+
+    // RISPOSTA PERSONALIZZATA
+    if (text.toLowerCase().includes("chi ti ha creato")) {
+        addMessage("ai",
+            "Sono stato creato da un magnifico Developer chiamato derry20_official. Se hai bisogno di aiuto non esitare ad aprire un ticket qui su Discord: https://discord.gg/jSPA39yNge"
+        );
+        return;
+    }
+
+    addMessage("user", text);
+    userInput.value = "";
+    callAPI(text);
 }
 
       if (!text) return;
