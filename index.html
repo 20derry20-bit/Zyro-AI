@@ -899,7 +899,7 @@
     
     sendBtn.addEventListener("click", sendMessage);
 
-    function sendMessage() {
+function sendMessage() {
     const text = userInput.value.trim();
 
     // BLOCCA INVIO SE VUOTO
@@ -913,6 +913,7 @@
         return;
     }
 
+    // MESSAGGIO NORMALE
     addMessage("user", text);
     userInput.value = "";
     callAPI(text);
